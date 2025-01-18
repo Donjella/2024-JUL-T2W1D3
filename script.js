@@ -17,19 +17,72 @@ console.log(costumesContainer)
 
 renderData()
 
+function createNewEntry(list, costume) {
+    // Create list items
+    const newCostumeEntry = document.createElement("li")
+    newCostumeEntry.innerText = costume
+
+    // Create and append a remove button
+    const removeButton = document.createElement("button")
+    removeButton.innerText = `Remove ${costume}`
+
+    // Add the functionality to the remove button
+    removeButton.addEventListener("click", () => {
+        removeCostumeFromList(list, newCostumeEntry)
+    })
+
+    newCostumeEntry.appendChild(removeButton)
+
+    list.appendChild(newCostumeEntry)
+}
+
 function renderData() {
     const costumesContainerList = document.createElement("ul")
+    costumesContainerList.id = "costumesContainerList"
 
     dataArray.forEach((costume) => {
         // let's see what we are dealing with
         console.log(costume)
 
-        //create list items
-        const newCostumeEntry = document.createElement("li")
-        newCostumeEntry.innerText = costume
-        
-        costumesContainerList.appendChild(newCostumeEntry)
+        createNewEntry(costumesContainerList, costume)
     })
 
     costumesContainer.appendChild(costumesContainerList)
+}
+
+function removeCostumeFromList(list, entry) {
+    list.removeChild(entry)
+}
+
+const formInputButton = document.querySelector("#formInputButton")
+formInputButton.addEventListener("click", (event) => {
+    addCostumeToList(event)
+})
+
+function addCostumeToList(event) {
+    event.preventDefault()
+    
+    // get the form
+    const costumeForm = document.getElementById("costumeInputForm")
+
+    // check the validity
+    const isFormValid = costumeForm.checkValidity()
+
+    if (!isFormValid) {
+        costumeForm.reportValidity()
+        return;
+    }
+
+    // get the input field
+    const newCostumeInput = document.getElementById("costumeInputText")
+    
+    //get the costumes container list
+    const costumesContainerList = document.getElementById("costumesContainerList")
+
+    // call the createNewEntry function to create a new costume entry at the end
+    createNewEntry(costumesContainerList, newCostumeInput.value)
+
+    // clear the input text to default placeholder text for better user experience
+    newCostumeInput.value = ""
+    newCostumeInput.focus()
 }
